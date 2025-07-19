@@ -1,29 +1,76 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function SignupPage() {
-  const [form, setForm] = useState({ name: '', email: '', password: '' })
-  const [message, setMessage] = useState('')
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [organizationName, setOrganizationName] = useState('');
+  const [message, setMessage] = useState('');
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    const res = await fetch('/api/signup', {
-      method: 'POST',
-      body: JSON.stringify(form),
-    })
+    e.preventDefault();
 
-    const data = await res.json()
-    setMessage(data.message || (data.success ? 'Signup successful!' : 'Signup failed'))
-  }
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/signup`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          email, 
+          password, 
+          organization_name: organizationName 
+        }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        setMessage('Signup successful!');
+        router.push('/login');
+      } else {
+        setMessage(data.error || 'Signup failed.');
+      }
+    } catch (error) {
+      setMessage('Network error.');
+    }
+  };
 
   return (
-    <form onSubmit={handleSubmit} className="p-4 space-y-2">
-      <input placeholder="Name" onChange={e => setForm({ ...form, name: e.target.value })} className="border p-2 w-full" />
-      <input placeholder="Email" onChange={e => setForm({ ...form, email: e.target.value })} className="border p-2 w-full" />
-      <input placeholder="Password" type="password" onChange={e => setForm({ ...form, password: e.target.value })} className="border p-2 w-full" />
-      <button className="bg-green-600 text-white px-4 py-2">Sign Up</button>
-      <p>{message}</p>
-    </form>
-  )
+    <div className="max-w-md mx-auto p-6">
+      <h1 className="text-2xl font-bold mb-6">Sign Up</h1>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <input
+          type="email"
+          placeholder="Email"
+          className="w-full p-2 border rounded"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          className="w-full p-2 border rounded"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+          minLength={6}
+        />
+        <input
+          type="text"
+          placeholder="Organization Name"
+          className="w-full p-2 border rounded"
+          value={organizationName}
+          onChange={(e) => setOrganizationName(e.target.value)}
+          required
+        />
+        <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded">
+          Sign Up
+        </button>
+      </form>
+      {message && <p className="mt-4 text-center text-red-600">{message}</p>}
+    </div>
+  );
 }
