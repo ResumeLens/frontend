@@ -64,7 +64,20 @@ export default function SignupPage() {
 
   return (
     <div className="max-w-md mx-auto p-6">
-      <div className="fixed top-0 left-0 right-0 h-16 flex items-center justify-end px-6 w-full bg-black text-white z-50">
+      <div className="fixed top-0 left-0 right-0 h-16 flex items-center justify-between px-6 w-full bg-black text-white z-50">
+        <NavigationMenu>
+          <NavigationMenuList>
+            <NavigationMenuItem>
+              <NavigationMenuLink
+                className="text-white text-lg font-semibold cursor-pointer"
+                onClick={() => router.push("/")}
+              >
+                Home
+              </NavigationMenuLink>
+            </NavigationMenuItem>
+          </NavigationMenuList>
+        </NavigationMenu>
+        
         <NavigationMenu>
           <NavigationMenuList>
             <NavigationMenuItem>
