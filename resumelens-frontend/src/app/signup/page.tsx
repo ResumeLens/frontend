@@ -8,7 +8,17 @@ import { Input } from "~/components/ui/input"
 import { Toaster } from "~/components/ui/sonner"
 import { toast } from "sonner"
 import { Loader2Icon } from "lucide-react"
-import { set } from 'zod/v4';
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuIndicator,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  NavigationMenuViewport,
+} from "~/components/ui/navigation-menu"
+// import { set } from 'zod/v4';
 
 export default function SignupPage() {
   const [email, setEmail] = useState('');
@@ -54,48 +64,62 @@ export default function SignupPage() {
 
   return (
     <div className="max-w-md mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-6">Sign Up</h1>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <Input
-          type="email"
-          placeholder="Email"
-          // className="w-full p-2 border rounded"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-        <Input
-          type="password"
-          placeholder="Password"
-          className="w-full p-2 border rounded"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-          minLength={6}
-        />
-        <Input
-          type="text"
-          placeholder="Organization Name"
-          className="w-full p-2 border rounded"
-          value={organizationName}
-          onChange={(e) => setOrganizationName(e.target.value)}
-          required
-        />
-        {status === 'loading' ? (
-          <Button size="sm" disabled className="w-full">
-            <Loader2Icon className="animate-spin mr-2 h-4 w-4" />
-            Please wait
-          </Button>
-        ) : status === 'success' ? (
-          <Button type="button" className="w-full" onClick={() => router.push('/login')}>
-            Go to login
-          </Button>
-        ) : (
-          <Button type="submit" className="w-full">
-            Sign Up
-          </Button>
-        )}
-      </form>
+      <div className="fixed top-0 left-0 right-0 h-16 flex items-center justify-end px-6 w-full bg-black text-white z-50">
+        <NavigationMenu>
+          <NavigationMenuList>
+            <NavigationMenuItem>
+              <NavigationMenuLink href='/login' className="text-white hover:underline cursor-pointer">
+                Login
+              </NavigationMenuLink>
+            </NavigationMenuItem>
+          </NavigationMenuList>
+        </NavigationMenu>
+      </div>
+
+      <div className='max-w-md mx-auto mt-15'>
+        <h1 className="scroll-m-20 text-center text-4xl font-extrabold tracking-tight text-balance mb-6">Sign Up</h1>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <Input
+            type="email"
+            placeholder="Email"
+            // className="w-full p-2 border rounded"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+          <Input
+            type="password"
+            placeholder="Password"
+            className="w-full p-2 border rounded"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            minLength={6}
+          />
+          <Input
+            type="text"
+            placeholder="Organization Name"
+            className="w-full p-2 border rounded"
+            value={organizationName}
+            onChange={(e) => setOrganizationName(e.target.value)}
+            required
+          />
+          {status === 'loading' ? (
+            <Button size="sm" disabled className="w-full">
+              <Loader2Icon className="animate-spin mr-2 h-4 w-4" />
+              Please wait
+            </Button>
+          ) : status === 'success' ? (
+            <Button type="button" className="w-full" onClick={() => router.push('/login')}>
+              Go to login
+            </Button>
+          ) : (
+            <Button type="submit" className="w-full">
+              Sign Up
+            </Button>
+          )}
+        </form>
+      </div>
       {/* {message && <p className="mt-4 text-center text-red-600">{message}</p>} */}
       <Toaster />
     </div>
