@@ -7,25 +7,18 @@ import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input"
 import { Toaster } from "~/components/ui/sonner"
 import { toast } from "sonner"
-import { Loader2Icon } from "lucide-react"
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuIndicator,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-  NavigationMenuViewport,
-} from "~/components/ui/navigation-menu"
-import { set } from 'zod/v4';
+import { Loader2Icon, Eye, EyeOff } from "lucide-react"
+
+import MouseFollow from "~/components/MouseFollow";
+
 
 export default function LoginPage() {
+  const [darkMode] = useState();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [organizationName, setOrganizationName] = useState('');
-  const [message, setMessage] = useState('');
-  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [showPassword, setShowPassword] = useState(false);
+  const [status, setStatus] = useState<'idle' | 'loading' | 'error'>('idle');
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -40,15 +33,17 @@ export default function LoginPage() {
       });
 
       const data = await res.json();
+      console.log(data);
 
-       if (res.ok) {
-        // setMessage('Login successful!');
-        toast.success('Login successful!');
-        setStatus('success');
-        localStorage.setItem('access_token', data.access_token);
-        // localStorage.setItem('refresh_token', data.refresh_token);
+      if (res.ok) {
+       // setMessage('Login successful!');
+       toast.success('Login successful!');
 
-        router.push('/');
+       localStorage.setItem('access_token', data.access_token);
+       localStorage.setItem('user_id', data.user.Email);
+       localStorage.setItem('organization', data.organization.Name);
+       
+       router.push('/');
       } else {
         // setMessage(data.error || 'Login failed.');
         toast.error(data.error || 'Login failed.');
@@ -62,33 +57,10 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="max-w-md mx-auto p-6">
-      <div className="fixed top-0 left-0 right-0 h-16 flex items-center justify-between px-6 w-full bg-black text-white z-50">
-        <NavigationMenu>
-          <NavigationMenuList>
-            <NavigationMenuItem>
-              <NavigationMenuLink
-                className="text-white text-lg font-semibold cursor-pointer"
-                onClick={() => router.push("/")}
-              >
-                Home
-              </NavigationMenuLink>
-            </NavigationMenuItem>
-          </NavigationMenuList>
-        </NavigationMenu>
+    <div className={`${darkMode ? "dark" : ""} transition-all duration-500`}>
+      <MouseFollow />
 
-        <NavigationMenu>
-          <NavigationMenuList>
-            <NavigationMenuItem>
-              <NavigationMenuLink href='/signup' className="text-white hover:underline cursor-pointer">
-                Sign Up
-              </NavigationMenuLink>
-            </NavigationMenuItem>
-          </NavigationMenuList>
-        </NavigationMenu>
-      </div>
-
-      <div className='max-w-md mx-auto mt-15'> 
+      <div className='max-w-md mx-auto mt-35 mb-50'> 
         <h1 className="scroll-m-20 text-center text-4xl font-extrabold tracking-tight text-balance mb-6">Log In</h1>
         <form onSubmit={handleSubmit} className="space-y-4">
           <Input
@@ -99,33 +71,40 @@ export default function LoginPage() {
             onChange={(e) => setEmail(e.target.value)}
             required
           />
-          <Input
-            type="password"
-            placeholder="Password"
-            className="w-full p-2 border rounded"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            minLength={6}
-          />
+
+          <div className="flex w-full items-center gap-2">
+            <Input
+              type={showPassword ? "text" : "password"}
+              placeholder="Password"
+              className="w-full p-2 border rounded"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              minLength={6}
+            />
+            <Button 
+              type='button' 
+              onClick={() => setShowPassword(!showPassword)} 
+              className="cursor-pointer bg-transparent hover:bg-transparent text-gray-500 dark:hover:text-gray-100 hover:text-gray-700"
+            >
+              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            </Button>
+          </div>
+
           {status === 'loading' ? (
             <Button size="sm" disabled className="w-full">
               <Loader2Icon className="animate-spin mr-2 h-4 w-4" />
               Please wait
             </Button>
-          ) : status === 'success' ? (
-            <Button type="button" disabled className="w-full" onClick={() => router.push('/login')}>
-              Logged In
-            </Button>
           ) : (
-            <Button type="submit" className="w-full">
+            <Button type="submit" className="w-full cursor-pointer bg-indigo-600 dark:bg-amber-400 dark:hover:bg-white hover:scale-105">
               Log In
             </Button>
           )}
         </form>
       </div>
+      
       <Toaster />
-      {/* {message && <p className="mt-4 text-center text-red-600">{message}</p>} */}
     </div>
   );
 }
