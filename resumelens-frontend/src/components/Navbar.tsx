@@ -38,7 +38,7 @@ const Navbar = () => {
               href="/"
               className="dark:text-white text-xl font-bold tracking-wide hover:tracking-wider transition-all duration-300 hover:underline underline-offset-4"
             >
-              Home
+              LOGO
             </NavigationMenuLink>
           </NavigationMenuItem>
         </NavigationMenuList>

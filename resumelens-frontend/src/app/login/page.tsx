@@ -5,11 +5,11 @@ import { useRouter } from 'next/navigation';
 
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input"
-import { Toaster } from "~/components/ui/sonner"
 import { toast } from "sonner"
 import { Loader2Icon, Eye, EyeOff } from "lucide-react"
 
 import MouseFollow from "~/components/MouseFollow";
+import Navbar from '~/components/Navbar';
 
 
 export default function LoginPage() {
@@ -61,6 +61,8 @@ export default function LoginPage() {
       <MouseFollow />
 
       <div className='max-w-md mx-auto mt-35 mb-50'> 
+        <Navbar />
+
         <h1 className="scroll-m-20 text-center text-4xl font-extrabold tracking-tight text-balance mb-6">Log In</h1>
         <form onSubmit={handleSubmit} className="space-y-4">
           <Input
@@ -92,7 +94,7 @@ export default function LoginPage() {
           </div>
 
           {status === 'loading' ? (
-            <Button size="sm" disabled className="w-full">
+            <Button disabled className="w-full">
               <Loader2Icon className="animate-spin mr-2 h-4 w-4" />
               Please wait
             </Button>
@@ -103,8 +105,6 @@ export default function LoginPage() {
           )}
         </form>
       </div>
-      
-      <Toaster />
     </div>
   );
 }
